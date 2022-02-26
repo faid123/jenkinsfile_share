@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Stage1-21050458') {
+            steps {
+                echo 'Stage 1 Completed - 21050458'
+            }
+        }
+	stage('Parallel'){
+		
+		parallel{
+		stage('Stage2-21050458') {
+			steps {
+				sh 'docker rm stage2-21050458-container'
+				sh 'sudo docker create --name stage2-21050458-container -it -p 5069:80 apache2-21050458-image --detached' 
+				echo 'Stage 2 Completed - 21050458'
+				}	
+			}
+		stage('Stage3-21050458') {
+			steps {
+				echo 'Stage 3 Completed - 21050458'
+				}
+			}
+}
+
+}	
+	stage('Stage4-21050458') {	
+		input {
+			 message 'Proceed to release work?'
+			parameters {
+				booleanParam(name: "Release", defaultValue:false, description:'Proceed to release work?')
+			}
+		}
+		steps {
+			script {
+				if (Release.toBoolean()) {
+					stage('Stage5-21050458') {
+						echo 'Work Released - 21050458'
+					}
+				}
+				else
+				{
+					stage('Stage5-21050458') {
+						echo 'Work Aborted - 21050458'
+					}
+				}
+			}
+		}
+	}
+    }
+}
